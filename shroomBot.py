@@ -2,6 +2,7 @@
 
 #Imports
 import spreadsheetparsing as xslsParser
+import holdificators as holder
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
@@ -25,9 +26,15 @@ isAlive = True
 credentials = Credentials.from_service_account_file(s_serviceAccountPath, scopes=s_scopes) # Create credentials object
 service = build('sheets', 'v4', credentials=credentials) # Build the Google Sheets API service
 
-item_table = xslsParser.parseTable(service, s_spreadsheetID, 0)
-npc_table = xslsParser.parseTable(service, s_spreadsheetID, 1)
-location_table = xslsParser.parseTable(service, s_spreadsheetID, 2)
+# item_table = xslsParser.npc_table 0)
+# npc_table = xslsParser.parseTable(service, s_spreadsheetID, 1)
+# loc_table = xslsParser.parseTable(service, s_spreadsheetID, 2)
+print(s_loggingTag + "Shroom is loading in external data...")
+item_table, npc_table, loc_table = xslsParser.parseTable(service, s_spreadsheetID)
+
+for row in item_table: 
+    tempItem = holder.BagOfHoardingItem(row)
+    print("we test: " + tempItem.name)
 
 #Accept input
 
