@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 import spreadsheetparsing as xslsParser
 import holdificators as holder
-#import discordClient
+import discordClient
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -80,6 +80,10 @@ for row in item_table:
         #maybe bug AI to quickly generate a 2 - 3 sentence character description? 
         
         #output results. 
+
+#start the client
+#initalize Client
+discordClient.client.run(s_botToken)
 
 shroomLog.info("Shroom Is Going Night Night...")
 
