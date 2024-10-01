@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 import spreadsheetparsing as xslsParser
 import holdificators as holder
+import holdificatorControlCenter as hcc
 import discordClient
 
 from google.oauth2.service_account import Credentials
@@ -46,12 +47,14 @@ service = build('sheets', 'v4', credentials=credentials) # Build the Google Shee
 
 shroomLog.info("Shroom is loading in external data...")
 item_table, npc_table, loc_table = xslsParser.parseTable(service, s_spreadsheetID)
+hcc.controlCenter.setTables(item_table, npc_table, loc_table)
 
 for row in item_table: 
     tempItem = holder.BagOfHoardingItem(row)
     print("Item: " + tempItem.name)
 
 
+#allTheTings = holdificatorControlCenter.BagOfHoarding(item_table, npc_table, loc_table)
 
 
 #Accept input

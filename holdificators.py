@@ -9,7 +9,12 @@ class BagOfHoardingItem:
         self.isHomebrew = bool(p_dataRow[5])
         self.characters = [] #TODO: logic to turn comma separated list into array
         self.properties = p_dataRow[7]
-        self.link = [] #p_dataRow[8] TODO: check if it exists
+
+        if (8 in p_dataRow):
+            self.link = p_dataRow[8]
+        else:
+            self.link = ""
+        self.isUsed = False
 
 
 #class that holds location information
