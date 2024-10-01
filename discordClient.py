@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import holdificatorControlCenter as hcc
+import holdificators as h
 
 #client = discord.Client(intents=discord.Intents.default())
 intents = discord.Intents.default()
@@ -21,14 +22,19 @@ async def ping(ctx):
 @client.command(name="grabItem", help="Returns information about specified item.")
 async def grabItem(ctx, itemName): #need checking for argument that has spaces.
     #check bag of Hoarding for Item
-    toOutput = hcc.controlCenter.findItem(itemName)
-    print(toOutput)
+    item:h.BagOfHoardingItem = hcc.controlCenter.findItem(itemName)
+    print(item)
     #format accordingly
     embed = discord.Embed(
         colour=discord.Colour.from_rgb(137, 204, 185), 
-        description="Testing if this even works", 
+        url=item.link,
+        #description=item.properties, 
         title= itemName
     )
+    embed.add_field(name="Item Type", value=item.itemType, inline=True)
+    embed.add_field(name="Rarity", value=item.rarity, inline=True)
+    embed.add_field(name="Attunement", value=item.reqAttunement, inline=True)
+    embed.add_field(name = "Properties", value=item.properties, inline=False)
     await ctx.send(embed=embed)
 
 #Commands - use discord embeds for these
@@ -38,3 +44,5 @@ async def grabItem(ctx, itemName): #need checking for argument that has spaces.
 #Get Random Location / Quest
 #Add Item / NPC / Location Data
 #Remove Item /NPC / Location Data
+
+#TODO: Find way to specify what channel to send messages in.
