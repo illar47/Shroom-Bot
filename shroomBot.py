@@ -56,36 +56,7 @@ for row in item_table:
 
 #allTheTings = holdificatorControlCenter.BagOfHoarding(item_table, npc_table, loc_table)
 
-
-#Accept input
-
-#determine if user is attempting to find a random location, item, or NPC
-
-    #if looking for item:
-
-        #determine identifying information: i.e. level, type (weapon, equipable etc), player tags (who it would suit)
-
-        #output random item that meets the criteria
-
-    #if looking for location
-
-        #determine if specific biome necessary (cave, beach, etc.)
-
-        #output random location that meets the criteria. 
-
-    #if looking for NPC
-        #determine identifying information: gender, age, career, etc. 
-
-        #randomly select name from list
-
-        #randomly select remaining information that was not specified by user (gender, age, career etc)
-
-        #maybe bug AI to quickly generate a 2 - 3 sentence character description? 
-        
-        #output results. 
-
-#start the client
-#initalize Client
+#start the Client
 discordClient.client.run(s_botToken)
 
 shroomLog.info("Shroom Is Going Night Night...")
