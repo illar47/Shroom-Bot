@@ -16,13 +16,17 @@ class BagOfHoardingItem:
             self.link = ""
         self.isUsed = False
 
-
 #class that holds location information
-class locationInformation:
-    def __init__(self) -> None:
-        pass
+class encounterItem:
+    def __init__(self, p_dataRow):
+        self.name = p_dataRow[0]
+        self.description = p_dataRow[1]
 
 #class that holds NPC location      
 class NPC:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, p_dataRow):
+        #honestly probably need something different than this
+        self.name = p_dataRow[0]
+        self.typeype = p_dataRow[1]
+        self.creatures = p_dataRow[2]
+        self.description = p_dataRow[3]

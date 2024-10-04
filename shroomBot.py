@@ -14,8 +14,6 @@ import discordClient
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
-
-
 load_dotenv() #Load ENV
 
 ### Static Variables ###
@@ -36,14 +34,9 @@ shroomLog.info("Shroom Is Booting Up...")
 
 #TODO: Future - add command line arg parser to instead take in a command line provided excel file
 
-### power on client connection to discord ###
-
-
-
 ### load in data tables from Google Drive ###
 credentials = Credentials.from_service_account_file(s_serviceAccountPath, scopes=s_scopes) # Create credentials object
 service = build('sheets', 'v4', credentials=credentials) # Build the Google Sheets API service
-
 
 shroomLog.info("Shroom is loading in external data...")
 item_table, npc_table, loc_table = xslsParser.parseTable(service, s_spreadsheetID)
@@ -53,10 +46,7 @@ for row in item_table:
     tempItem = holder.BagOfHoardingItem(row)
     print("Item: " + tempItem.name)
 
-
-#allTheTings = holdificatorControlCenter.BagOfHoarding(item_table, npc_table, loc_table)
-
-#start the Client
+### power on client connection to discord ###
 discordClient.client.run(s_botToken)
 
 shroomLog.info("Shroom Is Going Night Night...")
