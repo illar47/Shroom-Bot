@@ -9,7 +9,7 @@ class holdificatorControlCenter:
         self.itemHolder = {}
         self.npcHolder = {}
         self.encHolder = {}
-
+    
     def testificate ():
         print("STROOB")
     
@@ -28,9 +28,38 @@ class holdificatorControlCenter:
         if to_find in self.itemHolder: 
             return self.itemHolder.get(to_find)
         
-    def pickRandomItem(self, p_level, p_rarity, p_character):
-        randKey = random.choice(list(self.itemHolder.keys()))
-        return self.itemHolder[randKey]
+    def pickRandomItem(self, p_level, p_rarity, p_class):
+        #TODO: logic for if parameters are provided - maybe instead of character - do class
+        currentItems = self.itemHolder #save curr table as we gonna update
+        if p_level != None:
+            print ("we've got a live one boys")
+            #search for items in currOptions that match p_level
+            #save them as new currOptions
+            newItems = currentItems.copy()
+            for item in currentItems:
+                if currentItems[item].lvl !=p_level:
+                    newItems.pop(item) #should remove the item from the map
+            currentItems = newItems.copy()
+        if p_rarity != None: 
+            print("shit not another one")
+            #search for items in currOptions that match p_rarity
+            #save them as new currOptions
+            newItems = currentItems.copy()
+            for item in currentItems:
+                if currentItems[item].rarity !=p_rarity:
+                    newItems.pop(item) #should remove the item from the map
+            currentItems = newItems.copy()
+        if p_class != None:
+            print("oh joy... here we go")
+            #search for items in currOptions that match p_character
+            #save them as new currOptions
+            newItems = currentItems.copy()
+            for item in currentItems:
+                if currentItems[item].classes != p_class: #TODO: actually needs to be more complex for list
+                    newItems.pop(item) #should remove the item from the map
+            currentItems = newItems.copy()
+        randKey = random.choice(list(currentItems.keys()))
+        return currentItems[randKey]
         
     def pickRandomEncounter(self):
         randKey = random.choice(list(self.encHolder.keys()))

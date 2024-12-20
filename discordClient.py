@@ -51,12 +51,12 @@ async def ping(ctx):
 
 #Get Specific Item
 @client.command(name="grabItem", help="Returns information about specified item.")
-async def grabItem(ctx, p_itemName): 
+async def grabItem(ctx, p_itemName=None): 
     #check bag of Hoarding for Item
     item:h.BagOfHoardingItem = hcc.controlCenter.findItem(p_itemName)
-
+    #TODO: return an error message if no item name provided
     #check if item exists
-    if item: 
+    if item and p_itemName: 
         embed, itemFile = embedFormatter(item)
         if itemFile:
             await ctx.send(file=itemFile, embed=embed)
@@ -68,8 +68,19 @@ async def grabItem(ctx, p_itemName):
 #Commands - use discord embeds for these
 #Get Random Item (with params)
 @client.command(name="grabRandomItem", help="Grabs a random item that meets the parameters expectations")
-async def grabRandomItem(ctx, p_itemLevel, p_assocChar): 
-    print("boopS")
+async def grabRandomItem(ctx, p_level=None, p_rarity=None, p_character=None): 
+    item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(p_level, p_rarity, p_character)
+    #maybe instead asks for params from user one at a time?
+    
+    #check if item exists
+    if item: 
+        embed, itemFile = embedFormatter(item)
+        if itemFile:
+            await ctx.send(file=itemFile, embed=embed)
+        else:
+            await ctx.send(embed=embed)
+    else: 
+         await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Sorry an error occured. Please try again momentarily")
     #abitrarily select item until one with matching specs appears
     #cred embed and send it
 
@@ -110,3 +121,12 @@ async def grabRandomItem(ctx, p_itemLevel, p_assocChar):
         #maybe bug AI to quickly generate a 2 - 3 sentence character description? 
         
         #output results. 
+
+#### TEST LAND ####
+@client.command(name="testOptionalParams", help="debugging method for optional parameters")
+async def testOptionalParams(ctx, *args): 
+    print("testing")
+    print(args)
+    print("done")
+    #await ctx.send(f'You passed {arg1} and {arg2}')
+    #need list of dictionary values that could autofill

@@ -7,7 +7,7 @@ class BagOfHoardingItem:
         self.itemType = p_dataRow[3]
         self.reqAttunement = bool(p_dataRow[4])
         self.isHomebrew = bool(p_dataRow[5])
-        self.characters = [] #TODO: logic to turn comma separated list into array
+        self.classes = [] #TODO: logic to turn comma separated list into array of classes
         self.properties = p_dataRow[7]
 
         if (8 in p_dataRow):
