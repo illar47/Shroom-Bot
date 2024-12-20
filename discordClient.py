@@ -44,19 +44,20 @@ def embedFormatter(p_holderItem):
 @client.event 
 async def on_ready():
     print("Logged in as a bot {0.user}".format(client)) #TODO make actual log message
+    await client.tree.sync()
 
-@client.command(name="ping", help= "Test command for ensuring the bot is functioning as intended. Will respond with pong")
+@client.hybrid_command(name="ping", help= "Test command for ensuring the bot is functioning as intended. Will respond with pong")
 async def ping(ctx):
     await ctx.send('Pong!')
 
 #Get Specific Item
-@client.command(name="grabItem", help="Returns information about specified item.")
-async def grabItem(ctx, p_itemName=None): 
+@client.hybrid_command(name="grabitem", help="Returns information about specified item.")
+async def grabitem(ctx, p_item_name=None): 
     #check bag of Hoarding for Item
-    item:h.BagOfHoardingItem = hcc.controlCenter.findItem(p_itemName)
+    item:h.BagOfHoardingItem = hcc.controlCenter.findItem(p_item_name)
     #TODO: return an error message if no item name provided
     #check if item exists
-    if item and p_itemName: 
+    if item and p_item_name: 
         embed, itemFile = embedFormatter(item)
         if itemFile:
             await ctx.send(file=itemFile, embed=embed)
@@ -67,7 +68,7 @@ async def grabItem(ctx, p_itemName=None):
 
 #Commands - use discord embeds for these
 #Get Random Item (with params)
-@client.command(name="grabRandomItem", help="Grabs a random item that meets the parameters expectations")
+@client.hybrid_command(name="grabrandomitem", help="Grabs a random item that meets the parameters expectations")
 async def grabRandomItem(ctx, p_level=None, p_rarity=None, p_character=None): 
     item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(p_level, p_rarity, p_character)
     #maybe instead asks for params from user one at a time?
