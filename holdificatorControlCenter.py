@@ -29,7 +29,7 @@ class holdificatorControlCenter:
             return self.itemHolder.get(to_find)
         
     def pickRandomItem(self, p_level, p_rarity, p_class):
-        #TODO: logic for if parameters are provided - maybe instead of character - do class
+        #TODO: make logic more efficent
         currentItems = self.itemHolder #save curr table as we gonna update
         if p_level != None:
             print ("we've got a live one boys")
@@ -58,6 +58,7 @@ class holdificatorControlCenter:
                 if currentItems[item].classes != p_class: #TODO: actually needs to be more complex for list
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
+        #TODO: error handling for when list is empty 
         randKey = random.choice(list(currentItems.keys()))
         return currentItems[randKey]
         

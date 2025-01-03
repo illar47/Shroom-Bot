@@ -69,8 +69,8 @@ async def grabitem(ctx, p_item_name=None):
 #Commands - use discord embeds for these
 #Get Random Item (with params)
 @client.hybrid_command(name="grabrandomitem", help="Grabs a random item that meets the parameters expectations")
-async def grabRandomItem(ctx, p_level=None, p_rarity=None, p_character=None): 
-    item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(p_level, p_rarity, p_character)
+async def grabRandomItem(ctx, level=None, rarity=None, character=None): 
+    item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
     #maybe instead asks for params from user one at a time?
     
     #check if item exists
