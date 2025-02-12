@@ -1,4 +1,5 @@
 import holdificators as holder
+import tableUtils as util
 import random
 
 class holdificatorControlCenter:
@@ -23,6 +24,12 @@ class holdificatorControlCenter:
         for row in p_itemTable: 
             tempItem = holder.BagOfHoardingItem(row)
             self.itemHolder[tempItem.name] = tempItem
+        for row in p_enc_table:
+            tempEnc = holder.encounterItem(row)
+            self.encHolder[tempEnc.name] = tempEnc
+        for row in p_npc_table:
+            tempNPC = holder.NPC(row)
+            self.npcHolder[tempNPC.name] = tempNPC
 
     def findItem(self, to_find): 
         if to_find in self.itemHolder: 
@@ -62,8 +69,48 @@ class holdificatorControlCenter:
         randKey = random.choice(list(currentItems.keys()))
         return currentItems[randKey]
         
-    def pickRandomEncounter(self):
-        randKey = random.choice(list(self.encHolder.keys()))
-        return self.encHolder[randKey]
+    def pickRandomEncounter(self, p_type):
+        currentEncs = self.encHolder #save curr table as we gonna update
+
+        if p_type != None:
+            print("the encounter has meaning")
+            newEncs = currentEncs.copy()
+            for item in currentEncs:
+                if currentEncs[item].type != p_type: #TODO: actually needs to be more complex for list
+                    newEncs.pop(item) #should remove the item from the map
+            currentEncs = newEncs.copy()
+
+        randKey = random.choice(list(currentEncs.keys()))
+        return currentEncs[randKey]
+    
+    def generateNPC(self, p_species, p_gender, p_description):
+        #get NPC name
+        randKey = random.choice(list(self.npcHolder.keys()))
+        npc:holder.NPC = self.npcHolder[randKey]
+
+        #configure species
+        if p_species == None:
+            npc.species =  random.choice(util.s_species)
+        else:
+            npc.species = p_species
+        
+        #configure gender
+        if p_gender == None:
+            npc.gender = random.choice(util.s_genders)
+        else:
+            npc.gender = p_gender
+        
+        #configure description
+        if p_description == None:
+            npc.description = random.choice(util.s_descriptiveTraits)
+        else:
+            npc.description = p_description
+
+        return npc
+
+
+
+
+    
 #put tables into holdificator control center
 controlCenter = holdificatorControlCenter(); 

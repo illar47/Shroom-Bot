@@ -20,13 +20,15 @@ class BagOfHoardingItem:
 class encounterItem:
     def __init__(self, p_dataRow):
         self.name = p_dataRow[0]
-        self.description = p_dataRow[1]
+        self.type = p_dataRow[1]
+        self.creatures = p_dataRow[2] #TODO: check for comma delimited list (also for an empty entry)
+        self.description = p_dataRow[3]
 
 #class that holds NPC location      
 class NPC:
     def __init__(self, p_dataRow):
-        #honestly probably need something different than this
+        #honestly probably need something different than this? idk temp for now
         self.name = p_dataRow[0]
-        self.typeype = p_dataRow[1]
-        self.creatures = p_dataRow[2]
-        self.description = p_dataRow[3]
+        self.species = "None"
+        self.gender = "None"
+        self.description = "None"

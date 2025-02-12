@@ -5,6 +5,7 @@ from discord.ext import commands
 
 import holdificatorControlCenter as hcc
 import holdificators as h
+import tableUtils as util
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -40,6 +41,45 @@ def embedFormatter(p_holderItem):
             embed.set_thumbnail(url="attachment://itemImage.png")
 
         return embed, itemFile
+    
+    if isinstance(p_holderItem, h.encounterItem):
+        embed = discord.Embed(
+            colour=discord.Colour.from_rgb(137, 204, 185), 
+            title= p_holderItem.name
+        )
+        embed.add_field(name="Encounter Type:", value=p_holderItem.type, inline=True)
+        embed.add_field(name="creatures:", value=p_holderItem.creatures, inline=True)
+        embed.add_field(name="Description:", value=p_holderItem.description, inline=False)
+
+        #check that image exists
+        itemFilename = os.getcwd() + "\\itemTypeIcons\\" + "scroll" + "ItemIcon.png"
+        filepath = Path(itemFilename)
+        itemFile = None
+        if filepath.is_file():
+            itemFile = discord.File(itemFilename, filename="itemImage.png")
+            embed.set_thumbnail(url="attachment://itemImage.png")
+
+        return embed, itemFile
+    if isinstance(p_holderItem, h.NPC):
+        embed = discord.Embed(
+            colour=discord.Colour.from_rgb(137, 204, 185), 
+            title= p_holderItem.name
+        )
+        embed.add_field(name="Species:", value=p_holderItem.species, inline=True)
+        embed.add_field(name="gender:", value=p_holderItem.gender, inline=True)
+        embed.add_field(name="Descriptive Trait:", value=p_holderItem.description, inline=True)
+
+        #check that image exists
+        itemFilename = os.getcwd() + "\\itemTypeIcons\\" + "armour" + "ItemIcon.png"
+        filepath = Path(itemFilename)
+        itemFile = None
+        if filepath.is_file():
+            itemFile = discord.File(itemFilename, filename="itemImage.png")
+            embed.set_thumbnail(url="attachment://itemImage.png")
+
+        return embed, itemFile
+
+
 
 @client.event 
 async def on_ready():
@@ -70,27 +110,56 @@ async def grabitem(ctx, p_item_name=None):
 #Get Random Item (with params)
 @client.hybrid_command(name="grabrandomitem", help="Grabs a random item that meets the parameters expectations")
 async def grabRandomItem(ctx, level=None, rarity=None, character=None): 
-    item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
-    #maybe instead asks for params from user one at a time?
-    
-    #check if item exists
-    if item: 
-        embed, itemFile = embedFormatter(item)
+    #TODO: check if provided level, rarity, and characters are valid
+    if util.checkItemParamValidity(level, rarity, character):
+        item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
+        #maybe instead asks for params from user one at a time?
+        
+        #check if item exists
+        if item: 
+            embed, itemFile = embedFormatter(item)
+            if itemFile:
+                await ctx.send(file=itemFile, embed=embed)
+            else:
+                await ctx.send(embed=embed)
+        else: 
+            await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Sorry an error occured. Please try again momentarily")
+        #abitrarily select item until one with matching specs appears
+        #cred embed and send it
+    else:
+        await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Invalid Inputs provided. Please try again with different inputs")
+
+#Get Random NPC
+#Get Random Location / Quest
+@client.hybrid_command(name="grabrandomencounter", help="Grabs a random encounter that meets the parameters expectations")
+async def grabRandomEncounter(ctx, type=None): 
+    if util.checkEncounterParamValidity(type):
+        encounter:h.encounterItem = hcc.controlCenter.pickRandomEncounter(type)
+
+          #check if item exists
+        if encounter: 
+            embed, itemFile = embedFormatter(encounter)
+            if itemFile:
+                await ctx.send(file=itemFile, embed=embed)
+            else:
+                await ctx.send(embed=embed)
+        else: 
+            await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Sorry an error occured. Please try again momentarily")
+    else:
+        await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Invalid Inputs provided. Please try again with different inputs")
+
+#Generate Random NPC
+@client.hybrid_command(name="createnpc", help="Generates a Random NPC")
+async def createNPC(ctx, species=None, gender=None, description=None):
+    npc:h.NPC = hcc.controlCenter.generateNPC(species, gender, description)        
+    if npc: 
+        embed, itemFile = embedFormatter(npc)
         if itemFile:
             await ctx.send(file=itemFile, embed=embed)
         else:
             await ctx.send(embed=embed)
     else: 
-         await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Sorry an error occured. Please try again momentarily")
-    #abitrarily select item until one with matching specs appears
-    #cred embed and send it
-
-#Get Specific item (param: item name)
-#Get Random NPC
-#Get Random Location / Quest
-#Add Item / NPC / Location Data
-#Remove Item /NPC / Location Data
-
+        await ctx.send("<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n Sorry an error occured. Please try again momentarily")
 #TODO: Find way to specify what channel to send messages in.
 
 #Accept input
