@@ -9,7 +9,11 @@ import tableUtils as util
 
 intents = discord.Intents.default()
 intents.message_content = True
-clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465>"
+clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465>" #error msg
+
+#collection of player names and associated channel IDs
+s_playerChannels = [["petros", 1353113008955588710], ["abearron", 1353113185921667206], ["elliot", 1353113288711602257], ["stormcaller", 1353113393741041754]]
+
 
 client = commands.Bot(command_prefix='./', intents=intents)
 
@@ -28,6 +32,7 @@ def embedFormatter(p_holderItem):
         embed.add_field(name="Item Type:", value=p_holderItem.itemType, inline=True)
         embed.add_field(name="Rarity:", value=p_holderItem.rarity, inline=True)
         embed.add_field(name="Must Attune:", value=p_holderItem.reqAttunement, inline=True)
+        embed.add_field(name="URL:", value=p_holderItem.link, inline=False)
 
          #aggressive mutations to account for space and any item types that have "item" in them
         itemFilename:str = p_holderItem.itemType
@@ -149,6 +154,11 @@ async def reqItem(ctx, item_name=None, username=None):
     #find associated chat for user. send sheet there if exists. 
     #error should be in bot channel, found sheet in character channel. 
     print("TODO")
+
+    #client.get_channel(111)
+    #client.get_user()
+    #s_playerChannels
+    
 
 #Location Command - Get Random Location / Quest
 @client.hybrid_command(name="grabrandomencounter", help="Grabs a random encounter that meets the parameters expectations")

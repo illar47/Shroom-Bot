@@ -39,7 +39,6 @@ class holdificatorControlCenter:
         #TODO: make logic more efficent
         currentItems = self.itemHolder #save curr table as we gonna update
         if p_level != None:
-            print ("we've got a live one boys")
             #search for items in currOptions that match p_level
             #save them as new currOptions
             newItems = currentItems.copy()
@@ -48,7 +47,6 @@ class holdificatorControlCenter:
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
         if p_rarity != None: 
-            print("shit not another one")
             #search for items in currOptions that match p_rarity
             #save them as new currOptions
             newItems = currentItems.copy()
@@ -57,7 +55,6 @@ class holdificatorControlCenter:
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
         if p_class != None:
-            print("oh joy... here we go")
             #search for items in currOptions that match p_character
             #save them as new currOptions
             newItems = currentItems.copy()
@@ -73,7 +70,6 @@ class holdificatorControlCenter:
         currentEncs = self.encHolder #save curr table as we gonna update
 
         if p_type != None:
-            print("the encounter has meaning")
             newEncs = currentEncs.copy()
             for item in currentEncs:
                 if currentEncs[item].type != p_type: #TODO: actually needs to be more complex for list
@@ -107,10 +103,6 @@ class holdificatorControlCenter:
             npc.description = p_description
 
         return npc
-
-
-
-
     
 #put tables into holdificator control center
 controlCenter = holdificatorControlCenter(); 

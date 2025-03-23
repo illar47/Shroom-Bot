@@ -40,11 +40,16 @@ service = build('sheets', 'v4', credentials=credentials) # Build the Google Shee
 
 shroomLog.info("Shroom is loading in external data...")
 item_table, npc_table, loc_table = xslsParser.parseTable(service, s_spreadsheetID)
+print("TESTING TABLE IMPORT: ")
+for row in item_table:
+    print(row)
+
 hcc.controlCenter.setTables(item_table, npc_table, loc_table)
 
+print("TESTING TABLE CONVERSION: ")
 for row in item_table: 
     tempItem = holder.BagOfHoardingItem(row)
-    print("Item: " + tempItem.name)
+    print("Item: " + tempItem.name + " | URL: " + tempItem.link)
 
 ### power on client connection to discord ###
 discordClient.client.run(s_botToken)
