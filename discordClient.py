@@ -2,6 +2,7 @@ import discord
 import os
 from pathlib import Path
 from discord.ext import commands
+from typing import Literal
 
 import holdificatorControlCenter as hcc
 import holdificators as h
@@ -13,7 +14,12 @@ clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon
 
 #collection of player names and associated channel IDs
 s_playerChannels = [["petros", 1353113008955588710], ["abearron", 1353113185921667206], ["elliot", 1353113288711602257], ["stormcaller", 1353113393741041754]]
+s_allowedPlayerNames = Literal["petros", "abearron", "elliot", "stormcaller"] #TODO: make mutable. 
 
+s_allowedItemLevelOptions = Literal["trinket","low", "medium", "high"]
+s_allowedItemRarityOptions = Literal["common", "uncommon", "rare", "very rare", "legendary"]
+
+s_allowedEncTypes = Literal["Non-Combat", "Combat"]
 
 client = commands.Bot(command_prefix='./', intents=intents)
 
@@ -127,7 +133,10 @@ async def grabitem(ctx, p_item_name=None):
 
 #Item Command - Get Random Item (with params)
 @client.hybrid_command(name="grabrandomitem", help="Grabs a random item that meets the parameters expectations")
-async def grabRandomItem(ctx, level=None, rarity=None, character=None): 
+async def grabRandomItem(ctx, level:s_allowedItemLevelOptions=None, 
+                         rarity:s_allowedItemRarityOptions=None, 
+                         character:s_allowedPlayerNames=None): 
+    
     #TODO: check if provided level, rarity, and characters are valid
     if util.checkItemParamValidity(level, rarity, character):
         item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
@@ -149,7 +158,7 @@ async def grabRandomItem(ctx, level=None, rarity=None, character=None):
 
 #Item Command - sends a requested item to a specified player
 @client.hybrid_command(name="reqitem", help="sends requested item to specified player")
-async def reqItem(ctx, item_name=None, username=None):
+async def reqItem(ctx, item_name=None, player_name:s_allowedPlayerNames=None):
     #check that provided item exists - if no, then error
     #find associated chat for user. send sheet there if exists. 
     #error should be in bot channel, found sheet in character channel. 
@@ -158,11 +167,10 @@ async def reqItem(ctx, item_name=None, username=None):
     #client.get_channel(111)
     #client.get_user()
     #s_playerChannels
-    
 
 #Location Command - Get Random Location / Quest
 @client.hybrid_command(name="grabrandomencounter", help="Grabs a random encounter that meets the parameters expectations")
-async def grabRandomEncounter(ctx, type=None): 
+async def grabRandomEncounter(ctx, type:s_allowedEncTypes=None): 
     if util.checkEncounterParamValidity(type):
         encounter:h.encounterItem = hcc.controlCenter.pickRandomEncounter(type)
 
@@ -181,6 +189,7 @@ async def grabRandomEncounter(ctx, type=None):
 #NPC Command - Generate Random NPC
 @client.hybrid_command(name="createnpc", help="Generates a Random NPC")
 async def createNPC(ctx, species=None, gender=None, description=None):
+    #TODO: option to add name
     npc:h.NPC = hcc.controlCenter.generateNPC(species, gender, description)        
     if npc: 
         embed, itemFile = embedFormatter(npc)
