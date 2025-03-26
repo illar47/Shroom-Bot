@@ -2,6 +2,8 @@
 s_validLevels = {"trinket", "low", "medium", "high"}
 s_validRarity = {"common", "uncommon","rare", "very rare", "legendary"} #TODO: make all of these case insensentitive
 s_assocCharacters = {} #TODO
+#TODO: also take into consideration the Litterals in the discord client, are those the same as here?
+#TODO: how to check validity of table. 
 
 #useful utils for encounter table 
 s_validEncTypes = {"non-combat", "combat"}
@@ -10,6 +12,7 @@ s_validEncTypes = {"non-combat", "combat"}
 s_species = ["Dwarf", "Elf", "Halfing", "Human", "Dragonborne", "Gnome", "Goliath", "Drow", "Half Elf", "Tiefling", "Orc", "Tortle", "unknown"]
 s_genders = ["male", "female", "unknown"]
 s_descriptiveTraits = ["bulbous", "tall", "squat", "muscular", "sexy", "short", "rotund", "enchanting", "domineering", "edgy"]
+
 #validation functions
 def checkItemParamValidity(p_levelVal, p_rarityVal, assocCharVal):
     if p_levelVal != None and not(p_levelVal.lower() in s_validLevels):

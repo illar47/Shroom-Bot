@@ -2,6 +2,7 @@
 class BagOfHoardingItem:
     def __init__(self, p_dataRow):
         self.name = p_dataRow[0]
+        self.itemKey =  self.name.lower().replace(" ", "")
         self.lvl = p_dataRow[1]
         self.rarity = p_dataRow[2]
         self.itemType = p_dataRow[3]

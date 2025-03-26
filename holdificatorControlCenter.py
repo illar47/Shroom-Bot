@@ -10,10 +10,8 @@ class holdificatorControlCenter:
         self.itemHolder = {}
         self.npcHolder = {}
         self.encHolder = {}
-    
-    def testificate ():
-        print("STROOB")
-    
+ 
+    #set up the tables and save all the data correctly
     def setTables(self, p_itemTable, p_npc_table, p_enc_table): 
 
         #parse each table and save as holdificator table?
@@ -23,7 +21,7 @@ class holdificatorControlCenter:
 
         for row in p_itemTable: 
             tempItem = holder.BagOfHoardingItem(row)
-            self.itemHolder[tempItem.name] = tempItem
+            self.itemHolder[tempItem.itemKey] = tempItem
         for row in p_enc_table:
             tempEnc = holder.encounterItem(row)
             self.encHolder[tempEnc.name] = tempEnc
@@ -31,10 +29,15 @@ class holdificatorControlCenter:
             tempNPC = holder.NPC(row)
             self.npcHolder[tempNPC.name] = tempNPC
 
+### ITEM METHODS ###
+
+    #Finds the item specified - searches the item table
     def findItem(self, to_find): 
-        if to_find in self.itemHolder: 
-            return self.itemHolder.get(to_find)
-        
+        searchKey = to_find.lower().replace(" ", "")
+        if searchKey in self.itemHolder: 
+            return self.itemHolder.get(searchKey)
+    
+    #selects a random item using given parameters
     def pickRandomItem(self, p_level, p_rarity, p_class):
         #TODO: make logic more efficent
         currentItems = self.itemHolder #save curr table as we gonna update
@@ -65,7 +68,10 @@ class holdificatorControlCenter:
         #TODO: error handling for when list is empty 
         randKey = random.choice(list(currentItems.keys()))
         return currentItems[randKey]
-        
+
+### ENCOUNTER METHODS ###
+
+    #selects a random encounter based on the specified type
     def pickRandomEncounter(self, p_type):
         currentEncs = self.encHolder #save curr table as we gonna update
 
@@ -79,6 +85,9 @@ class holdificatorControlCenter:
         randKey = random.choice(list(currentEncs.keys()))
         return currentEncs[randKey]
     
+### NPC METHODS ###
+
+    #generates an npc using given parameters. 
     def generateNPC(self, p_species, p_gender, p_description):
         #get NPC name
         randKey = random.choice(list(self.npcHolder.keys()))
