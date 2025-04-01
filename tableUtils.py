@@ -1,9 +1,6 @@
-#useful utils for item table
+#useful utils for item table - remember the Litterals in discordClient need to match these fyi
 s_validLevels = {"trinket", "low", "medium", "high"}
-s_validRarity = {"common", "uncommon","rare", "very rare", "legendary"} #TODO: make all of these case insensentitive
-s_assocCharacters = {} #TODO
-#TODO: also take into consideration the Litterals in the discord client, are those the same as here?
-#TODO: how to check validity of table. 
+s_validRarity = {"common", "uncommon","rare", "very rare", "legendary"}
 
 #useful utils for encounter table 
 s_validEncTypes = {"non-combat", "combat"}
@@ -18,8 +15,6 @@ def checkItemParamValidity(p_levelVal, p_rarityVal, assocCharVal):
     if p_levelVal != None and not(p_levelVal.lower() in s_validLevels):
         return False
     if p_rarityVal != None and not(p_rarityVal.lower() in s_validRarity):
-        return False
-    if assocCharVal != None and not(assocCharVal.lower() in s_assocCharacters):
         return False
     return True
 

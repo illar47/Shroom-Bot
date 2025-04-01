@@ -4,7 +4,7 @@ import random
 
 class holdificatorControlCenter:
     def __init__(self):
-        self.itemTable = None #TODO: change to empty lists
+        self.itemTable = None
         self.npcTable = None
         self.encTable = None
         self.itemHolder = {}
@@ -33,13 +33,16 @@ class holdificatorControlCenter:
 
     #Finds the item specified - searches the item table
     def findItem(self, to_find): 
-        searchKey = to_find.lower().replace(" ", "")
-        if searchKey in self.itemHolder: 
-            return self.itemHolder.get(searchKey)
+        if (to_find):
+            searchKey = to_find.lower().replace(" ", "")
+            if searchKey in self.itemHolder: 
+                return self.itemHolder.get(searchKey)
+        else:
+            return None
     
     #selects a random item using given parameters
     def pickRandomItem(self, p_level, p_rarity, p_class):
-        #TODO: make logic more efficent
+        #TODO: make logic more efficent & add check for if item is already in use
         currentItems = self.itemHolder #save curr table as we gonna update
         if p_level != None:
             #search for items in currOptions that match p_level

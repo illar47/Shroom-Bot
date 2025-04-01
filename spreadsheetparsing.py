@@ -7,7 +7,6 @@ from googleapiclient.discovery import Resource
 s_loggingTag = "SHROOMBOT|XLSX-PARSER| "
 
 #helper that parses for an Excel table and outputs it.
-#TODO: python is stupid af - make sure we do type checks also maybe optimize this a smidge... it's so clunky im gonna die
 '''
 Helper function that will connect to Google drive and parse the specified excel sheet and return it as a dictionary
 
@@ -27,7 +26,7 @@ def parseTable(p_service:Resource, p_sheetID:str):
     npc_table =  gitTable(p_service, tables, p_sheetID, 1)
     loc_table =  gitTable(p_service, tables, p_sheetID, 2)
 
-    return item_table, npc_table, loc_table #TODO: figure out type and also reformat as dictionary
+    return item_table, npc_table, loc_table
 
 '''
 Helper function that will return the collection of values for a specific index
@@ -40,7 +39,7 @@ def gitTable(p_service:Resource, p_tables, p_sheetID:str, p_sheetIndex:int):
     row_count = grid_properties.get('gridProperties', {}).get('rowCount', 0)
     column_count = grid_properties.get('gridProperties', {}).get('columnCount', 0)
 
-    table_range = f'{title}!A1:I{row_count}' #TODO: instead of using static letter maybe make a touch more dynamic for space purposes? 
+    table_range = f'{title}!A1:I{row_count}'
 
      # Call the Sheets API to fetch the data
     sheet_data = p_service.spreadsheets().values().get(spreadsheetId=p_sheetID, range=table_range).execute()

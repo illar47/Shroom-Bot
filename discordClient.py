@@ -10,12 +10,11 @@ import tableUtils as util
 
 intents = discord.Intents.default()
 intents.message_content = True
-clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465>" #error msg
-clientInfoStr = ":infoIcon:1290854447722790963" #infoIcon
+clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon:1290854428991033465> \n" #error msg
+clientInfoStr = "<:infoIcon:1290854447722790963> **Success** <:infoIcon:1290854447722790963> \n" #infoIcon
 
 #collection of player names and associated channel IDs
-s_playerChannels = {"petros":1353113008955588710, "abearron":1353113185921667206, "elliot":1353113288711602257, "stormcaller":1353113393741041754} #TODO: make a modifiable database entry
-s_allowedPlayerNames = Literal["petros", "abearron", "elliot", "stormcaller"] #TODO: make mutable. 
+s_playerChannels = {"petros":1353113008955588710, "abearron":1353113185921667206, "elliot":1353113288711602257, "stormcaller":1353113393741041754, "luke":1356410797705924728}
 
 s_allowedItemLevelOptions = Literal["trinket","low", "medium", "high"]
 s_allowedItemRarityOptions = Literal["common", "uncommon", "rare", "very rare", "legendary"]
@@ -26,8 +25,7 @@ client = commands.Bot(command_prefix='s/', intents=intents)
 
 #Helper Command - formats an embed to be nice. 
 def embedFormatter(holderItem): 
-    #TODO: formats an embed given a holdificator item and returns the embed - returns something else if failed
-    #can differentiate beteen holder types
+    #Return an Item
     if isinstance(holderItem, h.BagOfHoardingItem):
         embed = discord.Embed(
             colour=discord.Colour.from_rgb(137, 204, 185), 
@@ -56,6 +54,7 @@ def embedFormatter(holderItem):
 
         return embed, itemFile
     
+    #Return an encounter
     if isinstance(holderItem, h.encounterItem):
         embed = discord.Embed(
             colour=discord.Colour.from_rgb(137, 204, 185), 
@@ -74,6 +73,8 @@ def embedFormatter(holderItem):
             embed.set_thumbnail(url="attachment://itemImage.png")
 
         return embed, itemFile
+    
+    #Return an NPC
     if isinstance(holderItem, h.NPC):
         embed = discord.Embed(
             colour=discord.Colour.from_rgb(137, 204, 185), 
@@ -92,12 +93,24 @@ def embedFormatter(holderItem):
             embed.set_thumbnail(url="attachment://itemImage.png")
 
         return embed, itemFile
+    
+    #Somehow we're requesting an embed format that DNE
+    else: 
+        embed = discord.Embed(
+            colour=discord.Colour.from_rgb(137, 204, 185), 
+            title= "You Done Fucked Up"
+        )
+        embed.add_field(name="Seriously:", value="How the hell did you get this message? Fix your code", inline=True)
+        return embed
 
-
+def playerUpdateMessage():
+    print("Player List Updated:")
+    for player in s_playerChannels:
+        print("Player Name: " + player + " | Channel ID: " + str(s_playerChannels[player]))
 
 @client.event 
 async def on_ready():
-    print("Logged in as a bot {0.user}".format(client)) #TODO make actual log message
+    print("Logged in as a bot {0.user}".format(client))
     await client.tree.sync()
 
 ########### Commands - use discord embeds for these ###########
@@ -122,18 +135,39 @@ async def testOptionalParams(ctx, *args):
 
 #Util - add a new player to campaign
 @client.hybrid_command(name="player-add", help="Allows user to add a new player to campaign")
-async def addNewPlayer(ctx, new_player_name, player_channel_name): 
-    s_playerChannels[new_player_name] = player_channel_name; 
-    #update allowed player name litterals
-    s_allowedPlayerNames = Union[s_allowedPlayerNames, Literal[new_player_name]]
+async def addNewPlayer(ctx, new_player_name, player_channel_name):
+    if (new_player_name in s_playerChannels):
+        await ctx.send(clientErrorStr + "That User Already Exists. Please run player-update instead.")
+    else:
+        s_playerChannels[new_player_name] = player_channel_name; 
+        #TODO: check that the channel ID is valid
+
+        playerUpdateMessage()
+        await ctx.send(clientInfoStr + " New Player **" + new_player_name +"** added " + clientInfoStr)
 
 @client.hybrid_command(name="player-remove", help="Allows user to remove player from campaign")
-async def removePlayer(ctx, player_name): 
-    print ("TODO")
+async def removePlayer(ctx, player_name:str): 
+    if (player_name in s_playerChannels):
+        s_playerChannels.pop(player_name)
+        playerUpdateMessage()
+        await ctx.send(clientInfoStr + "Player **" + player_name + "** has been removed from the campaign. " + clientInfoStr) 
+    else:
+        await ctx.send(clientErrorStr + "That User Doesn't exist... Git Gud ig?")
 
 @client.hybrid_command(name="player-update", help="Allows user to update player information")
-async def updatePlayer(ctx, player_name, new_player_name = None, new_player_channel_name=None): 
-    print ("TODO")
+async def updatePlayer(ctx, player_name:str, new_player_name = None, new_player_channel_name=None):
+    if (player_name in s_playerChannels):
+
+        #Updating Channel Name
+        if (new_player_channel_name):
+            s_playerChannels[player_name] = new_player_channel_name
+
+        #Updating Player Name
+        if (new_player_name):
+            s_playerChannels[new_player_name] = s_playerChannels.pop(player_name)
+
+        playerUpdateMessage()
+        await ctx.send(clientInfoStr + "Player **" + player_name + "** has been updated" + clientInfoStr)
 
 @client.hybrid_command(name="player-getall", help="outputs a list of active players and their associated channel")
 async def getPlayerList(ctx): 
@@ -155,8 +189,6 @@ async def getPlayerList(ctx):
     
     await ctx.send(embed=embed)
 
-#TODO: commands for table updates 
-
 #### ITEM COMMANDS ####
 
 #Item Command - Get Specific Item
@@ -164,7 +196,7 @@ async def getPlayerList(ctx):
 async def grabitem(ctx, item_name): 
     #check bag of Hoarding for Item
     item:h.BagOfHoardingItem = hcc.controlCenter.findItem(item_name)
-    #TODO: return an error message if no item name provided
+
     #check if item exists
     if item and item_name: 
         embed, itemFile = embedFormatter(item)
@@ -173,16 +205,16 @@ async def grabitem(ctx, item_name):
         else:
             await ctx.send(embed=embed)
     else: 
-         await ctx.send(clientErrorStr + "\n Sorry the item you have requested doesn't exist. Please try again")
+         await ctx.send(clientErrorStr + "Sorry the item you have requested doesn't exist. Please try again")
 
 #Item Command - Get Random Item (with params)
 @client.hybrid_command(name="item-grab-random", help="Grabs a random item that meets the parameters expectations")
 async def grabRandomItem(ctx, level:s_allowedItemLevelOptions=None, 
                          rarity:s_allowedItemRarityOptions=None, 
-                         character:s_allowedPlayerNames=None): 
+                         character:str=None): 
     
-    #TODO: check if provided level, rarity, and characters are valid - also check if item has been used yet
-    if util.checkItemParamValidity(level, rarity, character):
+    #TODO: check if item has been used yet
+    if util.checkItemParamValidity(level, rarity) and (character in s_playerChannels):
         item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
         #maybe instead asks for params from user one at a time?
         
@@ -194,21 +226,21 @@ async def grabRandomItem(ctx, level:s_allowedItemLevelOptions=None,
             else:
                 await ctx.send(embed=embed)
         else: 
-            await ctx.send(clientErrorStr + "\n Sorry an error occured. Please try again momentarily")
+            await ctx.send(clientErrorStr + "Sorry an error occured. Please try again momentarily")
         #abitrarily select item until one with matching specs appears
         #cred embed and send it
     else:
-        await ctx.send(clientErrorStr + "\n Invalid Inputs provided. Please try again with different inputs")
+        await ctx.send(clientErrorStr + "Invalid Inputs provided. Please try again with different inputs")
 
 #Item Command - sends a requested item to a specified player
 @client.hybrid_command(name="item-request", help="sends requested item to specified player")
-async def reqItem(ctx, item_name, player_name:s_allowedPlayerNames):
+async def reqItem(ctx, item_name, player_name:str):
 
-    if item_name in s_allowedPlayerNames:
+    if player_name in s_playerChannels:
         channel = client.get_channel(s_playerChannels.get(player_name))
         #check bag of Hoarding for Item
         item:h.BagOfHoardingItem = hcc.controlCenter.findItem(item_name)
-        #TODO: return an error message if no item name provided
+
         #check if item exists
         if item and item_name: 
             embed, itemFile = embedFormatter(item)
@@ -216,11 +248,11 @@ async def reqItem(ctx, item_name, player_name:s_allowedPlayerNames):
                 await channel.send(file=itemFile, embed=embed)
             else:
                 await channel.send(embed=embed)
-            ctx.send("Item Requested, our finest merchants are delivering it now!")
+            await ctx.send(clientInfoStr + "Item Requested, our finest merchants are delivering it now!")
         else: 
-            await ctx.send(clientErrorStr + "\n Sorry the item you have requested doesn't exist. Please try again")
+            await ctx.send(clientErrorStr + "Sorry the item you have requested doesn't exist. Please try again")
     else: 
-        await ctx.send(clientErrorStr + "\n Sorry the player you have requested doesn't exist. Please try again")
+        await ctx.send(clientErrorStr + "Sorry the player you have requested doesn't exist. Please try again")
 
 #### LOCATION COMMANDS ####
 
@@ -229,7 +261,6 @@ async def reqItem(ctx, item_name, player_name:s_allowedPlayerNames):
 async def grabRandomEncounter(ctx, encounter_type:s_allowedEncTypes=None): 
     if util.checkEncounterParamValidity(encounter_type):
         encounter:h.encounterItem = hcc.controlCenter.pickRandomEncounter(encounter_type)
-
           #check if item exists
         if encounter: 
             embed, itemFile = embedFormatter(encounter)
@@ -238,9 +269,9 @@ async def grabRandomEncounter(ctx, encounter_type:s_allowedEncTypes=None):
             else:
                 await ctx.send(embed=embed)
         else: 
-            await ctx.send(clientErrorStr + "\n Sorry an error occured. Please try again momentarily")
+            await ctx.send(clientErrorStr + "Sorry an error occured. Please try again momentarily")
     else:
-        await ctx.send(clientErrorStr + "\n Invalid Inputs provided. Please try again with different inputs")
+        await ctx.send(clientErrorStr + "Invalid Inputs provided. Please try again with different inputs")
 
 #### NPC COMMANDS ####
 #NPC Command - Generate Random NPC
@@ -255,5 +286,4 @@ async def createNPC(ctx, species=None, gender=None, description=None):
         else:
             await ctx.send(embed=embed)
     else: 
-        await ctx.send(clientErrorStr + "\n Sorry an error occured. Please try again momentarily")
-#TODO: Find way to specify what channel to send messages in.
+        await ctx.send(clientErrorStr + "Sorry an error occured. Please try again momentarily")

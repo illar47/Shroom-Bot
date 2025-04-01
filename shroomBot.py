@@ -1,5 +1,12 @@
-#TODO: Description of ShroomBot
+'''
+Shroom Bot is a TTRPG companion for your online Campaign
 
+This bot will load in an external document and allow a DM to select
+random items and distribute them into a player's personal channel. 
+
+Additionally it can use an imported table to generate NPCs and
+random encounters. 
+'''
 #Imports
 import discord
 import logging
