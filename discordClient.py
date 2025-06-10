@@ -14,7 +14,7 @@ clientErrorStr = "<:errorIcon:1290854428991033465> **Error Occured** <:errorIcon
 clientInfoStr = "<:infoIcon:1290854447722790963> **Success** <:infoIcon:1290854447722790963> \n" #infoIcon
 
 #collection of player names and associated channel IDs
-s_playerChannels = {"petros":1353113008955588710, "abearron":1353113185921667206, "elliot":1353113288711602257, "stormcaller":1353113393741041754, "luke":1356410797705924728}
+s_playerChannels = {"petros":1353113008955588710, "abearron":1353113185921667206, "julien":1353113288711602257, "stormcaller":1353113393741041754, "luke":1356410797705924728}
 
 s_allowedItemLevelOptions = Literal["trinket","low", "medium", "high"]
 s_allowedItemRarityOptions = Literal["common", "uncommon", "rare", "very rare", "legendary"]
@@ -214,7 +214,7 @@ async def grabRandomItem(ctx, level:s_allowedItemLevelOptions=None,
                          character:str=None): 
     
     #TODO: check if item has been used yet
-    if util.checkItemParamValidity(level, rarity) and (character in s_playerChannels):
+    if util.checkItemParamValidity(level, rarity) and (character in s_playerChannels or character is None):
         item:h.BagOfHoardingItem = hcc.controlCenter.pickRandomItem(level, rarity, character)
         #maybe instead asks for params from user one at a time?
         
