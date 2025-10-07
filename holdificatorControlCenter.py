@@ -42,14 +42,15 @@ class holdificatorControlCenter:
     
     #selects a random item using given parameters
     def pickRandomItem(self, p_level, p_rarity, p_class):
-        #TODO: make logic more efficent & add check for if item is already in use
+        #TODO: make logic more efficent 
+        #should really just use a database ugh. then I could filter by all of this but woulddddd it do rng? 
         currentItems = self.itemHolder #save curr table as we gonna update
         if p_level != None:
             #search for items in currOptions that match p_level
             #save them as new currOptions
             newItems = currentItems.copy()
             for item in currentItems:
-                if currentItems[item].lvl !=p_level:
+                if currentItems[item].lvl !=p_level or currentItems[item].isUsed:
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
         if p_rarity != None: 
@@ -57,7 +58,7 @@ class holdificatorControlCenter:
             #save them as new currOptions
             newItems = currentItems.copy()
             for item in currentItems:
-                if currentItems[item].rarity !=p_rarity:
+                if currentItems[item].rarity !=p_rarity or currentItems[item].isUsed:
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
         if p_class != None:
@@ -65,7 +66,7 @@ class holdificatorControlCenter:
             #save them as new currOptions
             newItems = currentItems.copy()
             for item in currentItems:
-                if currentItems[item].classes != p_class: #TODO: actually needs to be more complex for list
+                if currentItems[item].classes != p_class or currentItems[item].isUsed: #TODO: actually needs to be more complex for list
                     newItems.pop(item) #should remove the item from the map
             currentItems = newItems.copy()
         #TODO: error handling for when list is empty 

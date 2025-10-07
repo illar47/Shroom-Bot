@@ -14,11 +14,15 @@ class BagOfHoardingItem:
             self.classes = []
         self.properties = p_dataRow[7]
 
+        
         try:
             self.link = p_dataRow[8]
         except IndexError:
             self.link = ""
-        self.isUsed = False
+        try: 
+            self.isUsed = p_dataRow[9]
+        except IndexError:
+            self.isUsed = False
 
 #class that holds location information
 class encounterItem:
