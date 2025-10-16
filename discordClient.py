@@ -217,7 +217,6 @@ async def grabRandomItem(ctx, level:s_allowedItemLevelOptions=None,
 
 #Item Command - sends a requested item to a specified player
 @client.hybrid_command(name="item-request", help="sends requested item to specified player")
-# async def reqItem(ctx, item_name, player_name:str):
 async def reqItem(ctx, item_name, rx_channel: discord.TextChannel):
     item:h.BagOfHoardingItem = hcc.controlCenter.findItem(item_name)
 
@@ -231,6 +230,26 @@ async def reqItem(ctx, item_name, rx_channel: discord.TextChannel):
         await ctx.send(clientInfoStr + "Item Requested, our finest merchants are delivering it now!")
     else: 
         await ctx.send(clientErrorStr + "Sorry the item you have requested doesn't exist. Please try again")
+
+@client.hybrid_command(name="item-send-custom", help="send a custom item to specified channel.")
+async def sendCustomItem(ctx, item_name, item_desc, rx_channel: discord.TextChannel, item_url=""):
+    try:
+        embed = discord.Embed(
+            colour=discord.Colour.from_rgb(137, 204, 185), 
+            url=item_url,
+            #description=item.properties, 
+            title= item_name
+        )
+        embed.add_field(name="", value=item_desc, inline=True)
+        itemFilename = os.getcwd() + "\\itemTypeIcons\\" + "potion" + "ItemIcon.png"
+        itemFile = discord.File(itemFilename, filename="itemImage.png")
+        embed.set_thumbnail(url="attachment://itemImage.png")
+        
+        await rx_channel.send(file=itemFile, embed=embed)
+        await ctx.send(clientInfoStr + "Item Requested, our finest merchants are delivering it now!")
+    except:
+        await ctx.send(clientErrorStr + "Sorry the item you have requested seems to have some sort of issue. Please try again")
+
 
 #### LOCATION COMMANDS ####
 
